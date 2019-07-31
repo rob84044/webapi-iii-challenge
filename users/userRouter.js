@@ -6,14 +6,18 @@ const postDb = require("../posts/postDb")
 const router = express.Router();
 
 
-router.post('/', this.validateUser, async(req, res) => {
-    try {
-        const user = await Users.insert(req.body)
-        res.status(201).json(user);
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: 'Error retrieving the users' })
-    }
+router.post("/", validateUser, (req, res) => {
+    const user = req.body;
+
+    db.insert(user)
+        .then(user => {
+            res.status(201).json(user);
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: "There was an error while saving the user to the database"
+            });
+        });
 });
 
 router.post('/:id/posts', async(req, res) => {
