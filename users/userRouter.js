@@ -129,20 +129,16 @@ function validateUser(req, res, next) {
     }
 };
 
-const validatePost = (req, res, next) => {
-    const { body } = req
-    if (Object.keys(body).length === 0) {
-        return res.status(400).json({
-            message: `Missing post data`
-        })
+function validatePost(req, res, next) {
+    if (!req.body) {
+        res.status(400).json({ message: "missing post data" })
+    } else if (!req.body.text) {
+        res.status(400).json({ message: "missing required text field" })
+    } else if (!req.body.user_id) {
+        res.status(400).json({ message: "missing required user id field" })
+    } else {
+        next();
     }
-    const { text } = body
-    if (!text) {
-        return res.status(400).json({
-            message: `Missing required field: text`
-        })
-    }
-    next()
-}
+};
 
 module.exports = router;
