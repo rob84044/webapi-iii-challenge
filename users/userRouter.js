@@ -12,8 +12,17 @@ router.post('/', async(req, res) => {
     }
 });
 
-router.post('/:id/posts', (req, res) => {
-
+router.post('/:id/posts', async(req, res) => {
+    const postInfo = {...req.body, user_id: req.params.id }
+    try {
+        const post = await Messages.add(postInfo);
+        res.status(210).json(post)
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'Error getting the posts for the user'
+        })
+    }
 });
 
 router.get('/', (req, res) => {
