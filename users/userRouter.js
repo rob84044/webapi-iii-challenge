@@ -15,7 +15,7 @@ router.post('/', async(req, res) => {
 });
 
 router.post('/:id/posts', async(req, res) => {
-    const postInfo = {...req.body, user_id: req.params.id }
+    const postInfo = { text: req.body.text, user_id: req.params.id }
     try {
         const post = await Posts.insert(postInfo);
         res.status(210).json(post)
@@ -50,7 +50,7 @@ router.get('/:id', (req, res) => {
         .catch(err => {
             res.status(500).json({ error: err, message: 'The user information could not be retrieved.' });
         });
-}) 
+})
 
 
 router.get('/:id/posts', async(req, res) => {
@@ -119,8 +119,15 @@ function validateUserId(req, res, next) {
 
 
 function validateUser(req, res, next) {
-
-};
+    if (!req.body) {
+        res.status(400).json({ message: "missing user data" });
+    } else
+    if (!req.body.name) {
+        res.status(400).json({ message: "missing required name field" });
+    } else {
+        next()
+    }
+}
 
 function validatePost(req, res, next) {
 

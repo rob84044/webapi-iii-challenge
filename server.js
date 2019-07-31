@@ -14,9 +14,10 @@ server.get('/', (req, res) => {
 //custom middleware
 
 function logger(req, res, next) {
-    const now = Date(Date.now());
-    console.log(req.method, req.originalUrl, now);
-    next();
+    const timestamp = new Date().toTimeString()
+    const { method, url } = req
+    console.log(`${method} ${url} -- ${timestamp}`)
+    next()
 };
 
 module.exports = server;
