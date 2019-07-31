@@ -87,20 +87,15 @@ router.delete('/:id', validateUserId, (req, res) => {
     })
 });
 
-router.put('/:id', async(req, res) => {
-    try {
-        const user = await Users.update(req.params.id, req.body)
-        if (user) {
-            res.status(200).json(user);
-        } else {
-            res.status(404).json({ message: 'The user could not be found' })
-        }
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({
-            message: 'Error updating the user'
-        })
-    }
+router.put('/:id', validateUserId, (req, res) => {
+    const id = req.params.id;
+    const newUser = req.body;
+
+    db.update(id, newUser).then(count => {
+        res.status(200).json(newUser);
+    }).catch(err => {
+        res.status(500).json({ error: "user could not be updated" })
+    })
 });
 
 //custom middleware
