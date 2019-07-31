@@ -2,9 +2,8 @@ const express = require('express');
 const userRouter = require('./users/userRouter.js')
 const server = express();
 
-
 server.use(logger)
-server.use(express.json)
+server.use(express.json())
 server.use('/api/users/', userRouter)
 
 
@@ -15,8 +14,9 @@ server.get('/', (req, res) => {
 //custom middleware
 
 function logger(req, res, next) {
-    const now = Date.now()
-    console.log(req.method, req.originalUrl, now)
+    const now = Date(Date.now());
+    console.log(req.method, req.originalUrl, now);
+    next();
 };
 
 module.exports = server;
