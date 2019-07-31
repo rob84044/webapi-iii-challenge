@@ -4,8 +4,8 @@ const router = express.Router();
 
 router.post('/', async(req, res) => {
     try {
-        const users = await Users.find(req.query)
-        res.status(200).json(users);
+        const user = await Users.add(req.query)
+        res.status(201).json(user);
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: 'Error retrieving the users' })
@@ -25,8 +25,14 @@ router.post('/:id/posts', async(req, res) => {
     }
 });
 
-router.get('/', (req, res) => {
-
+router.get('/', async(req, res) => {
+    try {
+        const users = await Users.find(req.query);
+        res.status(200).json(users);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error retrieving the users' })
+    }
 });
 
 router.get('/:id', (req, res) => {
