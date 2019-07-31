@@ -1,10 +1,12 @@
-const express = require('express');
-const Users = require('./userDb.js')
-const Posts = require('../posts/postRouter.js');
+const express = require("express");
+
+const db = require("./userDb")
+const postDb = require("../posts/postDb")
 
 const router = express.Router();
 
-router.post('/', async(req, res) => {
+
+router.post('/', this.validateUser, async(req, res) => {
     try {
         const user = await Users.insert(req.body)
         res.status(201).json(user);
@@ -99,25 +101,23 @@ router.put('/:id', async(req, res) => {
 
 //custom middleware
 
-const validateUserId = async(req, res, next) => {
+function validateUserId(req, res, next) {
 
-    try {
-        const userId = req.params.id
-        const user = await db.getById(userId)
+    const id = req.params.id;
+
+    db.getById(id).then(user => {
+        console.log(user);
         if (!user) {
-            return res.status(400).json({
-                message: `Invalid user id`
-            })
+            res.status(400).json({ message: "invalid user id" })
         } else {
-            req['user'] = user
-            next()
+            req.user = user;
+            next();
         }
-    } catch (error) {
-        res.status(500).json({
-            error: `An error occurred while attempting to lookup the user`
-        })
-    }
-}
+    }).catch(err => {
+        console.log(err);
+        res.status(500).json({ message: "user could not be retrieved" })
+    })
+};
 
 const validateUser = (req, res, next) => {
     const { body } = req
