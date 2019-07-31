@@ -20,17 +20,18 @@ router.post("/", validateUser, (req, res) => {
         });
 });
 
-router.post('/:id/posts', async(req, res) => {
-    const postInfo = { text: req.body.text, user_id: req.params.id }
-    try {
-        const post = await Posts.insert(postInfo);
-        res.status(201).json(post)
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({
-            message: 'Error getting the posts for the user'
+router.post('/:id/posts', validateUserId, validatePost, (req, res) => {
+    const post = req.body;
+
+    postDb.insert(post)
+        .then(post => {
+            res.status(201).json(post);
         })
-    }
+        .catch(err => {
+            res.status(500).json({
+                error: "There was an error while saving the post to the database"
+            });
+        });
 });
 
 router.get('/', async(req, res) => {
