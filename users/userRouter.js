@@ -135,8 +135,20 @@ const validateUser = (req, res, next) => {
     next()
 }
 
-function validatePost(req, res, next) {
-
-};
+const validatePost = (req, res, next) => {
+    const { body } = req
+    if (Object.keys(body).length === 0) {
+        return res.status(400).json({
+            message: `Missing post data`
+        })
+    }
+    const { text } = body
+    if (!text) {
+        return res.status(400).json({
+            message: `Missing required field: text`
+        })
+    }
+    next()
+}
 
 module.exports = router;
