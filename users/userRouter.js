@@ -18,7 +18,7 @@ router.post('/:id/posts', async(req, res) => {
     const postInfo = { text: req.body.text, user_id: req.params.id }
     try {
         const post = await Posts.insert(postInfo);
-        res.status(210).json(post)
+        res.status(201).json(post)
     } catch (error) {
         console.log(error);
         res.status(500).json({
@@ -99,24 +99,25 @@ router.put('/:id', async(req, res) => {
 
 //custom middleware
 
-function validateUserId(req, res, next) {
+const validateUserId = async(req, res, next) => {
 
-    const id = req.params.id;
-
-    Users.getById(id)
-        .then(user => {
-            if (user) {
-                req.user = user;
-                next();
-            } else {
-                res.status(400).json({ message: "Invalid User ID" });
-            }
+    try {
+        const userId = req.params.id
+        const user = await db.getById(userId)
+        if (!user) {
+            return res.status(400).json({
+                message: `Invalid user id`
+            })
+        } else {
+            req['user'] = user
+            next()
+        }
+    } catch (error) {
+        res.status(500).json({
+            error: `An error occurred while attempting to lookup the user`
         })
-        .catch(err => {
-            res.status(500).json(err);
-        })
+    }
 }
-
 
 function validateUser(req, res, next) {
     if (!req.body) {
