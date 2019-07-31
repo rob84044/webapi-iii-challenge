@@ -34,14 +34,16 @@ router.post('/:id/posts', validateUserId, validatePost, (req, res) => {
         });
 });
 
-router.get('/', async(req, res) => {
-    try {
-        const users = await Users.get(req.query);
-        res.status(200).json(users);
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: 'Error retrieving the users' })
-    }
+router.get('/', (req, res) => {
+    db.get()
+        .then(users => {
+            res.status(200).json(users);
+        })
+        .catch(err => {
+            res
+                .status(500)
+                .json({ error: "The users information could not be retrieved." });
+        });
 });
 
 router.get('/:id', (req, res) => {
