@@ -30,22 +30,22 @@ router.get('/', async(req, res) => {
     //Async allows us to use the try/catch and allows us to use the await functionality
     //Uses the validatePost middleware function
 router.post('/', validatePost, async(req, res) => {
-    //Initializes the try in the try/catch setup
-    try {
-        //Destructuring the text value from req.body
-        const { text } = req.body
-            //Destructuring the id value from req.user
-        const { id } = req.user
-            //Takes the two above destructured values and uses the postDbs function of insert to pass the two values in and assigns that result to post. Once it finishes the code moves on
-        const post = await postDb.insert({ text, user_id: id })
-            //After the above line completes, send an HTTP status of 201, and send the inserted object back as a JSON object
-        res.status(201).json(post)
-            // This starts the catch and allows the passed in error(if there is one) to be used
-    } catch (error) {
-        res.status(500).json({
-            error: `An error occurred while attempting to create new post`
-        })
-    }
-})
-
+        //Initializes the try in the try/catch setup
+        try {
+            //Destructuring the text value from req.body
+            const { text } = req.body
+                //Destructuring the id value from req.user
+            const { id } = req.user
+                //Takes the two above destructured values and uses the postDbs function of insert to pass the two values in and assigns that result to post. Once it finishes the code moves on
+            const post = await postDb.insert({ text, user_id: id })
+                //After the above line completes, send an HTTP status of 201, and send the inserted object back as a JSON object
+            res.status(201).json(post)
+                // This starts the catch and allows the passed in error(if there is one) to be used
+        } catch (error) {
+            res.status(500).json({
+                error: `An error occurred while attempting to create new post`
+            })
+        }
+    })
+    //This line exports router, which is assigned to the expressJS framework's Router method
 module.exports = router
